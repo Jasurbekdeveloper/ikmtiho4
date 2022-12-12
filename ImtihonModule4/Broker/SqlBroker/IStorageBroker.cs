@@ -11,6 +11,6 @@ namespace ImtihonModule4.Broker.SqlBroker
         public Task<OrderAplication> InsertOrderAppAsync(OrderAplication app);
         public Task<OrderSeat> InsertOrderSeatAsync(OrderSeat seat);
 
-        public Task<EventHall> DeleteEventHallAsync(int id);
+        public Task<bool> DeleteEventHallAsync(int id);
     }
 }
