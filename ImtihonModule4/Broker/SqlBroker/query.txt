@@ -1,0 +1,103 @@
+﻿
+diogram : https://dbdiagram.io/d/6396b4b899cb1f3b55a0b492
+create database EventMenagement
+
+CREATE TABLE Users(id int identity primary key,
+					username varchar(50),
+					pasword varchar(40),
+					phone varchar(20),
+					role int default 2)
+
+
+CREATE TABLE EventHall(id int identity primary key,
+			 hall_name varchar(50) not null,
+			 size int not null,
+			 price decimal not null
+			 )
+
+CREATE TABLE OrderAplication(id int identity primary key,
+			 company_id int foreign key references Users(id) on delete cascade,
+			 eventHall_id int foreign key references EventHall(id) on delete cascade,
+			 eventStartTime datetime not null,
+			 eventFinishedTime datetime not null,
+			 status bit default  0
+			 )
+CREATE table Seat
+(
+  id int IDENTITY PRIMARY KEY,
+  seat_num int NOT NULL,
+  eventHall_id int foreign key references EventHall(id) on delete cascade,
+  orderSeat_status bit DEFAULT 0
+)
+CREATE TABLE orderSeat
+(
+  id int IDENTITY PRIMARY KEY,
+  USERid int foreign key references Users(id) on delete cascade,
+  OrderApliction_id int foreign key references OrderAplication(id),
+  seat_id int foreign key references Seat(id),
+  orderSeat_status bit DEFAULT 0
+)
+CREATE TABLE Admin(id int identity primary key,
+					username varchar(50),
+					pasword varchar(40),
+					phone varchar(20),
+					)
+INSERT INTO Admin(username,pasword,phone) values('Jasur','Jasur_4422','+998 94 686 44 22')
+
+CREATE PROCEDURE RegistrUser @username varchar(50), @pasword varchar(20), @phone varchar(20)
+AS
+BEGIN
+ 
+ INSERT INTO Users(username,pasword,phone) values (@username,@pasword, @phone)
+ 
+END
+
+CREATE PROCEDURE SetOrederAplication_Status @status bit, @AplicationId int
+AS
+BEGIN
+ 
+ update OrderAplication set status = @status where id = @AplicationId
+ 
+END
+
+CREATE PROCEDURE RegistrOrderApplivaton @companyId int, @eventHall_id int , @start_at datetime,@finish_at datetime
+AS
+BEGIN
+ 
+ INSERT INTO OrderAplication(company_id,eventHall_id,eventStartTime,eventFinishedTime) 
+ values (@companyId,@eventHall_id, @start_at,@finish_at)
+ 
+END
+
+CREATE PROCEDURE InsertEvetHall @Hallname varchar(50), @Size int, @price decimal
+AS
+BEGIN
+ 
+ INSERT INTO EventHall(hall_name,size,price) values (@Hallname,@Size, @price)
+ 
+END
+
+CREATE PROCEDURE DeleteEvetHall  @evetHall_Id int
+AS
+BEGIN
+ 
+DELETE FROM EventHall WHERE id = @evetHall_Id; 
+
+END
+
+CREATE PROCEDURE SelectAllUser 
+AS
+BEGIN
+ 
+ Select * from Users
+ 
+END
+
+CREATE PROCEDURE InsertOrderSeat @userId int, @App_id int, @seat_id int
+AS
+BEGIN
+ 
+ INSERT INTO orderSeat(USERid,OrderApliction_id,seat_id) values (@userId,@App_id, @seat_id)
+ 
+END
+
